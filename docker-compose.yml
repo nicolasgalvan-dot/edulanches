@@ -1,0 +1,36 @@
+# EstuLanches — produção: aplicação + PostgreSQL
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: estulanches-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-estulanches}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-troque_esta_senha}
+      POSTGRES_DB: ${DB_NAME:-estulanches}
+    volumes:
+      - dados_pg:/var/lib/postgresql/data   # dados persistem entre reinicializações
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-estulanches} -d ${DB_NAME:-estulanches}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # sem "ports": o banco NÃO fica exposto fora da rede interna do Docker
+
+  app:
+    build: .
+    image: estulanches-app:1.0.0
+    container_name: estulanches-app
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      APP_VERSION: 1.0.0
+      DATABASE_URL: postgres://${DB_USER:-estulanches}:${DB_PASSWORD:-troque_esta_senha}@db:5432/${DB_NAME:-estulanches}
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  dados_pg:
