@@ -40,5 +40,13 @@ No PowerShell: `$env:DATABASE_URL="postgres://..."; npm run test:integration`
 - Preços em **centavos (inteiro)** — evita erro de ponto flutuante.
 - Banco **sem porta publicada**: só a aplicação o acessa (rede interna do Compose).
 - Container roda como usuário `node` (sem root); `HEALTHCHECK` no app e no banco.
+
+
+
+
+
+## 🎥 Vídeo da apresentação
+
+[Assistir ao vídeo](https://youtu.be/85yPN8F95CI?si=WChXHed_JRRM4Ri-)
 - `depends_on: service_healthy` — app só sobe quando o banco está pronto.
 - Senha via `.env` (não vai para o Git).
